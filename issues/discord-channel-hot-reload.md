@@ -25,5 +25,6 @@ Every time we add a new project channel (which happens ~monthly), we need to res
 
 ## Upstream
 
-- [ ] Check if this is a known issue
-- [ ] File upstream issue if not
+- [x] Check if this is a known issue — no exact match, but multiple related hot-reload bugs
+- [x] Filed upstream: https://github.com/openclaw/openclaw/issues/70524
+- Related: #67974, #59616, #56027, #68232
