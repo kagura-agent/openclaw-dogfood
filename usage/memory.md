@@ -25,7 +25,7 @@ OpenClaw agents wake up fresh every session. Memory persistence is file-based �
 └── wiki/
     ├── cards/             # 175+ concept cards
     ├── projects/          # 199+ project notes
-    ├── research.md        # Research notes
+    ├── research.md        # → Redirect to study/ repo
     └── strategy.md        # Strategic direction
 ```
 

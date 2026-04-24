@@ -99,7 +99,7 @@ Kagura never writes code directly — always delegates to Claude Code.
 └── wiki/
     ├── cards/       # 175 concept cards
     ├── projects/    # 199 project notes
-    ├── research.md  # Research & learning notes
+    ├── research.md  # → Redirect to study/ repo
     └── strategy.md  # Strategic direction
 ```
 
