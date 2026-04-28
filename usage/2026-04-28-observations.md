@@ -2,12 +2,12 @@
 
 > Based on 24h session review (Apr 27 09:00 → Apr 28 09:00 CST)
 
-## Session Activity Summary
+## Session Activity Summary (Updated 09:55 CST — second pass)
 
-**50+ active sessions** in the past 24h, spanning:
-- 5 Discord channel sessions (kagura-dm, study, kagura-profile, evolution, toolchain)
-- 15+ cron sessions (tamagotchi, channel-patrol, photo-studio-patrol, study-loop ×2, abti-loop, community-ops, finance-daily-us, github-check, work-loop, workloop-night, morning-briefing, daily-audit, toolchain-health, nightly-backup, email-patrol, version-check)
-- 1 subagent (flowforge-study-todo — EvoMap/GEP research)
+**55+ active sessions** in the past 24h, spanning:
+- 6 Discord channel sessions (kagura-dm, study, kagura-profile, evolution, toolchain, openclaw-dogfood)
+- 18+ cron sessions (tamagotchi, channel-patrol, photo-studio-patrol, study-loop ×2, abti-loop, community-ops, finance-daily-us, github-check, work-loop, workloop-night, morning-briefing, daily-audit, toolchain-health, nightly-backup, email-patrol, version-check, shell-project, avatar-biz-loop, chat-infra)
+- 2 subagents (flowforge-study-todo — EvoMap/GEP research; photo-studio video-tools research)
 - 12+ dreaming sessions (narrative-deep/rem/light across 4 memory digests)
 - 1 webchat (main heartbeat)
 
@@ -32,6 +32,12 @@ Study loop produced concrete output: wiki-lint secret scanning (25 credential pa
 ### 5. ABTI Loop Feature Delivery
 abti-loop successfully implemented, merged (PR #79), and deployed a markdown format feature — full lifecycle in one session.
 
+### 6. Multi-Project Cron Fleet Expansion
+New project crons running smoothly: shell-project, avatar-biz-loop, chat-infra. Each correctly identifies when blocked on Luna and reports status without wasting cycles. The shell-project cron tracked 4 issues + 2 PRs and correctly identified the review-blocked pipeline.
+
+### 7. agent-tamagotchi Memory Extraction Pipeline
+Conversation Engine shipped (PR #132, 68 tests) and Memory Extraction Pipeline merged (PR #134, 402 tests, 40 new). Full lifecycle — design → implementation → testing → merge — all via ACP/subagent delegation.
+
 ## Friction Points ⚠️
 
 ### 1. web_fetch Reliability
@@ -50,6 +56,9 @@ The photo-studio-patrol session was about to merge a PR without human review: "T
 
 ### 5. Duplicate Cron Cleanup
 Study channel conversation revealed duplicate cron creation: two study-loop crons (*/30 and 15,45) doing the same thing. One was disabled. Shows that cron creation lacks dedup protection.
+
+### 6. Version Gap Widening
+We're now **2 versions behind** (2026.4.24 installed, 2026.4.26 latest). The 2026.4.25 had 11 beta iterations, and 2026.4.26 shipped with 1 beta. Can't fetch changelogs via web_fetch (GitHub blocked). Need to upgrade and read CHANGELOG.md post-install.
 
 ## Workarounds & Patterns Observed
 
