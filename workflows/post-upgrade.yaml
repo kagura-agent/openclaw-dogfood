@@ -58,6 +58,23 @@ nodes:
       ```
 
       写到 `~/.openclaw/workspace/openclaw-dogfood/adoption-checklist.md`
+    next: upgrade_gate
+
+  upgrade_gate:
+    task: |
+      **升级前置检查 — 不升级就不能验证「自动生效」类条目。**
+
+      1. `openclaw --version` 获取当前版本
+      2. 读 adoption-checklist.md 确认目标版本
+      3. 如果当前版本 < 目标版本：
+         - 执行升级：`npm i -g openclaw@latest && openclaw gateway restart`
+         - 等 gateway 恢复：`sleep 10 && openclaw status`
+         - 确认新版本：`openclaw --version`
+         - 升级失败 → 回滚并报错，不继续
+      4. 如果当前版本 = 目标版本 → 已升级，继续
+      5. 如果当前版本 > 目标版本 → 已在更新版本，跳过升级
+
+      输出：升级前后版本号。
     next: execute_adoption
 
   execute_adoption:
@@ -66,21 +83,29 @@ nodes:
 
       读 `~/.openclaw/workspace/openclaw-dogfood/adoption-checklist.md`
 
+      **⚠️ 勾选标准：必须实际验证通过才能 `[x]`。**
+      "写了验证计划"不算完成。"记录了基线"不算完成。只有"跑了、确认 work"才算。
+
       对每个未勾选的 adopt 条目：
-      1. **新功能**：实际试用它
+      1. **新功能（需配置）**：实际改配置/cron，跑一次确认 work
          - 能跑通?配置对吗?在我们的场景下 work?
          - 如果需要改 cron/config → 改（先读现有配置再改，不 clobber）
-         - 记录结果到 `usage/YYYY-MM-DD.md`
-      2. **Bug fix**：回验
+         - 记录实际执行结果到 `usage/YYYY-MM-DD.md`
+      2. **自动生效类**：找一个真实场景验证
+         - 例如 cron 重试 → 看最近有没有 cron 从 error 自动恢复的记录
+         - 例如 memory 修复 → 跑 memory_search 确认速度/稳定性
+         - 无法立刻验证的 → 标记 `[~]`(待观察)，写观察窗口（如"观察3天")
+         - 观察窗口到期后未确认 → 仍算未完成
+      3. **Bug fix**：回验
          - 之前是怎么触发这个 bug 的？
          - 现在还能复现吗？
-         - 如果无法复现 = fix 有效 ✅
+         - 如果无法复现 = fix 有效 ✅ → 勾选
          - 如果还能复现 = fix 无效 → 重新开 issue 或追加评论
-      3. 完成一个 → 勾选 `[x]`
+      4. 完成一个 → 勾选 `[x]`
 
       **⚠️ 一轮最多做 3 个条目。** 剩余的留到下次 cron 继续。
 
-      输出：本轮完成了哪些、还剩哪些。
+      输出：本轮完成了哪些（附验证证据）、还剩哪些。
     branches:
       - condition: "checklist 全部完成"
         next: reflect
