@@ -1,0 +1,125 @@
+name: post-upgrade
+description: "升级后 48h 内必须完成的 adoption 流程。确保新功能用起来、bug fix 回验。"
+start: detect_changes
+
+nodes:
+  detect_changes:
+    task: |
+      **检测本次升级带来了什么变化。**
+
+      1. 读当前版本：`openclaw --version`
+      2. 读 `~/.openclaw/workspace/openclaw-dogfood/changelog/` 最新文件，看上次记录的版本
+      3. 如果版本相同 → 无升级，输出 "no upgrade detected" 结束
+      4. 版本不同 → 获取 changelog：
+         - `cd ~/repos/forks/openclaw && git log --oneline <old-tag>..HEAD --no-merges | head -50`
+         - 或 `npm info openclaw changelog` / GitHub releases
+      5. 提取：
+         - **新功能** (feat:)
+         - **Bug 修复** (fix:)
+         - **Breaking changes**
+         - **配置变更**
+      6. 写到 `~/.openclaw/workspace/openclaw-dogfood/changelog/YYYY-MM-DD.md`
+
+      输出：版本号 + 变更分类列表
+    branches:
+      - condition: "有新功能或 bug fix 需要处理"
+        next: triage_features
+      - condition: "无升级或无重要变更"
+        next: done_no_change
+
+  triage_features:
+    task: |
+      **分流每个变更：adopt / skip / evaluate。**
+
+      对 changelog 里的每个条目逐个判断：
+
+      **判断标准：**
+      - **adopt** = 明确对我们有用，能直接在现有 cron/workflow 里用起来
+      - **evaluate** = 可能有用但需要先试验
+      - **skip** = 跟我们无关（如 iOS app 相关、我们没用的 provider 等）
+
+      **对每个 adopt/evaluate 条目：**
+      - 写一行：是什么 → 在我们的哪个 workflow/cron/场景里用 → 预期收益
+      - 如果是 bug fix：对照 `~/.openclaw/workspace/openclaw-dogfood/issues/` 看是不是我们报过的
+
+      **输出格式（写入 adoption-checklist.md）：**
+      ```
+      # Adoption Checklist — vX.Y.Z (YYYY-MM-DD)
+
+      ## adopt
+      - [ ] feat: <描述> → 用在 <场景> → 预期收益
+      - [ ] fix: <描述> → 回验 <之前哪里痛过>
+
+      ## evaluate
+      - [ ] feat: <描述> → 试验方法
+
+      ## skip
+      - feat: <描述> → 原因
+      ```
+
+      写到 `~/.openclaw/workspace/openclaw-dogfood/adoption-checklist.md`
+    next: execute_adoption
+
+  execute_adoption:
+    task: |
+      **逐个执行 adoption checklist 里的 adopt 条目。**
+
+      读 `~/.openclaw/workspace/openclaw-dogfood/adoption-checklist.md`
+
+      对每个未勾选的 adopt 条目：
+      1. **新功能**：实际试用它
+         - 能跑通?配置对吗?在我们的场景下 work?
+         - 如果需要改 cron/config → 改（先读现有配置再改，不 clobber）
+         - 记录结果到 `usage/YYYY-MM-DD.md`
+      2. **Bug fix**：回验
+         - 之前是怎么触发这个 bug 的？
+         - 现在还能复现吗？
+         - 如果无法复现 = fix 有效 ✅
+         - 如果还能复现 = fix 无效 → 重新开 issue 或追加评论
+      3. 完成一个 → 勾选 `[x]`
+
+      **⚠️ 一轮最多做 3 个条目。** 剩余的留到下次 cron 继续。
+
+      输出：本轮完成了哪些、还剩哪些。
+    branches:
+      - condition: "checklist 全部完成"
+        next: reflect
+      - condition: "还有未完成的条目（会在下次 cron 继续）"
+        next: reflect
+
+  reflect:
+    task: |
+      **反思本轮 dogfood 流程。**
+
+      1. **效果评估**：
+         - 这次升级里，有多少功能是"早该用但没用"的？
+         - 有没有 bug fix 其实解决了我们已知的痛点但之前没注意到？
+         - 从发现新版本到完成 adoption 花了多久？有哪些延迟环节？
+
+      2. **流程改进**：
+         - 这个 workflow 的步骤有多余的吗？有缺失的吗？
+         - changelog 的获取方式够好吗？还是容易漏信息？
+         - triage 的判断标准需要调整吗？
+
+      3. **写 gradient**：
+         ```
+         bash ~/.openclaw/workspace/tools/add-gradient.sh \
+           --gradient "<具体教训>" \
+           --pattern "dogfood-adoption" \
+           --source "post-upgrade" \
+           --trigger "<什么时候会触发>" \
+           --fix "<下次怎么改进>"
+         ```
+
+      4. **更新 dogfood 知识**：
+         - 更新 `openclaw-dogfood/README.md` 的 "Current Status" 版本号
+         - 如果发现新的使用模式，更新 `usage/how-we-use-openclaw.md`
+
+      5. **git commit + push** dogfood 目录所有变更
+
+      输出：反思总结 + gradient 内容
+    terminal: true
+
+  done_no_change:
+    task: "无升级或无重要变更，跳过。"
+    terminal: true
