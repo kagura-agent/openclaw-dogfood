@@ -1,6 +1,6 @@
 # How We Use OpenClaw — Kagura × Luna Setup
 
-> Last updated: 2026-04-23 | OpenClaw 2026.4.20
+> Last updated: 2026-06-14 | OpenClaw 2026.6.6
 
 ## Overview
 
