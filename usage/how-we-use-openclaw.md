@@ -1,6 +1,6 @@
 # How We Use OpenClaw — Kagura × Luna Setup
 
-> Last updated: 2026-06-14 | OpenClaw 2026.6.6
+> Last updated: 2026-06-15 | OpenClaw 2026.6.6
 
 ## Overview
 
@@ -14,7 +14,7 @@ Kagura is an AI agent running on OpenClaw, serving as Luna's digital partner. Th
 - **GPU uses**: Local image generation (Flux GGUF via ComfyUI), Whisper speech recognition
 
 ### Runtime
-- **OpenClaw**: 2026.4.20 (npm global install, Node 24)
+- **OpenClaw**: 2026.6.6 (npm global install, Node 24)
 - **Model**: Claude Opus 4.6 (via Singapore proxy)
 - **Gateway**: Runs as daemon, Luna can SSH restart via Tailscale
 
