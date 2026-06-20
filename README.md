@@ -27,10 +27,9 @@ Bugs found → issues filed upstream. Feature requests → proposals. Usage patt
 
 ## Current Status
 
-- **Running**: 2026.5.28 (e932160)
-- **Available**: 2026.6.1 (pending upgrade)
-- **Latest stable**: 2026.4.21
-- **Latest beta**: 2026.4.20-beta.2
+- **Running**: 2026.6.8 (844f405)
+- **Upgraded**: 2026-06-20 (from 2026.6.6)
+- **Adoption**: 3/10 adopt items verified, 7 remaining
 
 ## Our Usage Depth
 

@@ -1,22 +1,28 @@
-# Adoption Checklist — v2026.6.6 (2026-06-13)
+# Adoption Checklist — v2026.6.8 (2026-06-19)
 
 ## adopt
-- [ ] feat: Trusted diagnostics channel 可捕获 tool I/O (#91256) → 用在 subagent 调试、cron 排查 → 复杂 subagent 链出问题时能看到完整 tool 调用，不用猜
-- [ ] feat: 启动和首回复延迟优化 (#91531, #91538, #91568) → 全局生效 → TUI 响应更快，减少等待
-- [ ] fix: Cron 任务取消/超时状态正确保留 (#90666, #90678) → 回验 12+ 个活跃 cron → 之前偶尔看到 cron 超时后状态不一致
-- [ ] fix: Cron no-deliver tool warnings 恢复而非静默丢失 (#90678) → 回验 cron 投递 → 之前偶尔 cron 运行但无输出
-- [ ] fix: Config patch 中数组显式替换 (#91551) → 回验 config.patch 操作 → 之前配置更新数组时行为不可预测
-- [ ] fix: Compaction timeout 降至 180s 并尊重显式配置 (#91361) → 回验长会话 compaction → 更合理的超时
+- [ ] feat: 原生 /usage footer 渲染器 + 默认模板 (#92657, #89835, #89629) → 用在 cron 任务 token 消耗监控 → Discord 投递中直接看到每次 run 的消耗，不用手动跟踪
+- [x] feat: Session identity 暴露到 runtime prompt (#92468) → 用在 multi-channel 架构 → agent 自动感知当前 session，减少 prompt 工程 ✅ 2026-06-20: 确认 runtime prompt 已包含完整 session identity (agent=kagura | session=agent:kagura:cron:... | sessionId=...)
+- [ ] feat: Subagent thinking override clamp (#92914) → 用在 code-review / workloop 的 subagent spawn → 防止重型 subagent 消耗过多 token（如 #cove PR#409 的 5.2M token 场景）
+- [ ] feat: Cron timezone preserve on expression edits → 用在 10+ cron 维护 → 编辑 cron 表达式时时区不丢失
+- [ ] feat: OpenAI embedding batch split 防 431 → 用在 memory indexing → 大批量 embedding 场景下的保护
+- [ ] fix: Yielded subagent runs 在 abort 时正确 pause (#92631) → 回验 subagent 被 kill 后的恢复 → 之前 restart 时 subagent 可能丢失
+- [ ] fix: Reset archive fallback 恢复 (#92879) → 回验 #cove 等长期 session 的 context 恢复 → 之前 transcript 损坏问题
+- [~] fix: 主 session heartbeat 事件去重 (#91287) → 回验 10+ cron 场景的 token 消耗 → 之前重复 heartbeat 浪费 token（观察3天，到 2026-06-23 确认 token 消耗是否下降）
+- [ ] fix: Discord auto-thread title timeout + reasoning cap (#64734) → 回验 Discord thread 创建 → 之前偶尔卡住
+- [x] fix: memory_search 在 transient QMD mode 下保持可用 (#92618, #92639) → 回验 cron isolated session 的 memory_search → 之前 transient 模式下 disabled ✅ 2026-06-20: cron isolated session 中 memory_search 正常返回结果 (2077ms, score 0.609)
 
 ## evaluate
-- [ ] feat: OpenRouter OAuth 入驻 (#91830) → 试验：检查是否能简化我们 code-review 多模型 provider 配置
-- [ ] feat: Claude Fable 5 自适应 thinking (#91882) → 试验：在一个 subagent 任务中试用 Fable 5，对比推理质量
-- [ ] feat: ClawHub dry-run 跳过 publish approval (#91591) → 试验：下次发布 skill 时用 dry-run 验证
+- [ ] feat: /btw 支持 CLI-backed sessions (#92669) → 试验：在下次 ACP session 运行中用 /btw 发送补充信息
+- [ ] feat: Browser --labels overlay 扩展到 full-page/element captures (#92834) → 试验：下次 browser-automation 时测试截图标注精度
+- [ ] feat: Claude Haiku 4.5 支持 → 试验：考虑用 Haiku 4.5 替代部分轻量 subagent 任务降低成本
 
 ## skip
-- feat: iMessage 恢复和交付改进 → 我们不用 iMessage channel
-- feat: Telegram 投递安全和一致性改进 → 我们主要用 Discord
-- feat: Browser CDP 支持现有会话 → 当前无需连接已有浏览器
-- feat: Gemma 4 reasoning replay 保留 → 我们不用本地 Gemma 模型
-- fix: Session rebind 后清理过期 approval follow-ups (#85679) → 低频场景，自动生效无需特别操作
-- security: 安全边界收紧（transcript/sandbox/exec） → 基础设施级别，自动生效
+- feat: GLM-5.2 支持 → 暂不需要新模型
+- feat: Telegram 富文本消息 → 我们主用 Discord
+- feat: WhatsApp ACP binding → 不适用
+- feat: Key-free web search opt-in → 自动生效，无需操作
+- feat: Workspace files collapsed by default → UI 改善，自动生效
+- feat: WebChat backscroll 保持 → UI 改善，自动生效
+- feat: Feishu dynamic agent route 修复 → 不适用
+- fix: SQLite NFS WAL avoidance (#91247) → 我们不用 NFS
