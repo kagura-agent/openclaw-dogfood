@@ -11,7 +11,7 @@
 - [ ] fix: preserve pending subagent announces (#94349) → 回验 gogetajob 流程 subagent 完成通知丢失
 - [ ] fix: cron default runMode "due" not "force" (#94453) → 回验 cron 意外重跑问题
 - [ ] fix: cron isolated setup timeout retry (#94588) → 回验 isolated cron setup 超时后直接 fail
-- [ ] fix: prevent lane timeout during long tool exec (#94082) → 回验长时间 exec (git clone 等) 被 lane 超时杀掉
+- [x] fix: prevent lane timeout during long tool exec (#94082) → ✅ 回验完成 (2026-06-24)：work-loop 连续 3 天零错误
 
 ## evaluate
 - [ ] feat: Standalone 官方 provider plugins (#93470) → 试验方法：检查 gateway 启动日志看是否自动发现 provider 插件
