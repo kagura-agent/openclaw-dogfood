@@ -1,30 +1,32 @@
-# Adoption Checklist — v2026.6.9 (2026-06-22)
+# Adoption Checklist — v2026.6.10 (2026-06-25)
 
 ## adopt
-- [ ] feat: Codex 自动 plugin approvals (#92625) → 用在 ACP cron jobs (gogetajob, code-review 等) → 减少 plugin 批准卡住导致 cron 超时
-- [ ] feat: cron compact list (#93395) → 用在日常 cron 管理 → 30+ job 查看更清晰
-- [ ] feat: Firecrawl keyless scrape (#94551) → 用在研究型 cron (study workflow, web_fetch 场景) → 无需配 API key 即可抓取
-- [ ] fix: retry thinking-only errored turns (#92191) → 回验 thinking-only 空回复卡住 session 的问题
-- [ ] fix: retry empty post-tool final turns (#93073) → 回验 6/18 日报中 tool 调用后空回复被吞
-- [ ] fix: preserve fresh usage after compaction (#93084) → 回验 compaction 后 token 统计异常
-- [ ] fix: drop partialJson artifacts from history (#93469) → 回验 session history 偶现垃圾 JSON 片段
-- [ ] fix: preserve pending subagent announces (#94349) → 回验 gogetajob 流程 subagent 完成通知丢失
-- [ ] fix: cron default runMode "due" not "force" (#94453) → 回验 cron 意外重跑问题
-- [ ] fix: cron isolated setup timeout retry (#94588) → 回验 isolated cron setup 超时后直接 fail
-- [x] fix: prevent lane timeout during long tool exec (#94082) → ✅ 回验完成 (2026-06-24)：work-loop 连续 3 天零错误
+- [ ] feat: Fast Talks 自动模式 (#85104) → 用在 channel-patrol / cove-patrol / 短 cron jobs → 短对话自动 fast mode 省 token 和延迟
+- [ ] fix: Cron delivery awareness 修复 (#93580) → 回验 cron announce 偶发送错 channel 的潜在风险 → 直接加强多 channel cron 架构可靠性
+- [ ] fix: Channel 切换时清除 stale origin (#95328) → 回验跨 channel session 状态泄漏 → 对我们多 channel 运行模式很重要
+- [ ] fix: Trusted policies 在 hook 组合时不丢失 (#94545) → 回验 approval-sensitive flows（elevated exec）信任策略丢失 → 防止隐性安全降级
 
 ## evaluate
-- [ ] feat: Standalone 官方 provider plugins (#93470) → 试验方法：检查 gateway 启动日志看是否自动发现 provider 插件
-- [ ] feat: Codex Hosted Search (#93446) → 试验方法：在 Codex ACP session 中测试 web_search 是否无需额外配置
-- [ ] feat: Codex remote-node exec (#93654) → 试验方法：在 Codex session 中尝试操作 macOS node
-- [ ] feat: Codex app-server SecretRefs (#94324) → 试验方法：尝试声明式传递 secret 给 Codex session
-- [ ] feat: OTEL log export (#94561) → 试验方法：配置 OTEL endpoint 查看是否有日志输出
+- [ ] feat: Provider plugin 安装后刷新 registry (#95792) → 试验方法：安装/重装一个 provider plugin，确认 registry 立刻更新无需 restart
+- [ ] fix: Zai/GLM failover 路径修正 (#94461, #93241) → 试验方法：配置含 GLM fallback 的 model chain，模拟 overload 看 failover 是否正确触发
 
 ## skip
-- feat: ClawRouter managed proxy (#93832→reverted) → 已回滚，等稳定
-- feat: iOS Watch controls (#93387) → 非刚需，无 Apple Watch 使用场景
-- feat: Session workspace rail (#92856) → UI 组件，等有需求再探索
-- feat: Cohere provider plugin (#24661) → 当前无 Cohere 使用需求
-- feat: SIEM security events (#93945) → 企业级安全审计，个人使用不需要
-- fix: Discord tool status emoji ordering (#93488) → 不影响功能，cosmetic fix
-- fix: preserve CJK IME composition (#93498) → WebChat 场景，我们主要用 Discord/CLI
+- feat: GLM-5.2 reasoning levels 暴露 (#94136) → 目前不用 GLM 做推理
+- feat: Native /think 菜单通过 runtime catalog 解析 (#94067) → 影响不大，我们用 Claude/GPT 为主
+- refactor: SDK transcript identity target API (#95030) → 内部重构，不影响使用
+- feat: Copilot harness lifecycle parity (#94838) → 我们不用 Copilot
+
+---
+
+## 上一版本遗留 (v2026.6.9 — 仍需跟进)
+- [ ] feat: Codex 自动 plugin approvals (#92625) → 用在 ACP cron jobs
+- [x] feat: cron compact list (#93395) → ✅ 回验完成 (2026-06-25)：cron list 返回 compact 格式，仅含 id/name/enabled/nextRunAtMs/scheduleKind/lastRunStatus
+- [ ] feat: Firecrawl keyless scrape (#94551) → 研究型 cron 场景
+- [ ] fix: retry thinking-only errored turns (#92191) → 空回复卡住 session
+- [ ] fix: retry empty post-tool final turns (#93073) → tool 调用后空回复被吞
+- [ ] fix: preserve fresh usage after compaction (#93084) → compaction 后 token 统计异常
+- [ ] fix: drop partialJson artifacts from history (#93469) → session history 垃圾 JSON
+- [ ] fix: preserve pending subagent announces (#94349) → subagent 完成通知丢失
+- [x] fix: cron default runMode "due" not "force" (#94453) → ✅ 回验完成 (2026-06-25)：21 次 run 中仅 1 次 manual 触发，其余全按 schedule，无意外 force-run
+- [x] fix: cron isolated setup timeout retry (#94588) → ✅ 回验完成 (2026-06-25)：2026-06-23 两次 timeout error 自动 backoff retry (2min→6min→success)，未等待 24h
+- [x] fix: prevent lane timeout during long tool exec (#94082) → ✅ 回验完成 (2026-06-24)
