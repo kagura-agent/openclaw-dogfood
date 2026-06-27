@@ -1,10 +1,10 @@
 # Adoption Checklist — v2026.6.10 (2026-06-25)
 
 ## adopt
-- [ ] feat: Fast Talks 自动模式 (#85104) → 用在 channel-patrol / cove-patrol / 短 cron jobs → 短对话自动 fast mode 省 token 和延迟
-- [ ] fix: Cron delivery awareness 修复 (#93580) → 回验 cron announce 偶发送错 channel 的潜在风险 → 直接加强多 channel cron 架构可靠性
-- [ ] fix: Channel 切换时清除 stale origin (#95328) → 回验跨 channel session 状态泄漏 → 对我们多 channel 运行模式很重要
-- [ ] fix: Trusted policies 在 hook 组合时不丢失 (#94545) → 回验 approval-sensitive flows（elevated exec）信任策略丢失 → 防止隐性安全降级
+- [x] feat: Fast Talks 自动模式 (#85104) → ✅ 回验完成 (2026-06-27)：session_status 显示 `Fast: auto (60 sec)`，所有 cron session 的 effectiveFastMode="auto" with effectiveFastModeSource="config"。短对话自动适用 fast mode。
+- [x] fix: Cron delivery awareness 修复 (#93580) → ✅ 回验完成 (2026-06-27)：检查 20+ cron job 的 run history，全部 delivery.intended = delivery.resolved，无 channel 错投。所有 deliveryStatus="delivered" 且 source="explicit"。
+- [~] fix: Channel 切换时清除 stale origin (#95328) → 待观察 (观察7天至 2026-07-04)：当前 isolated cron session 的 route context 无 stale fields，但需要跨 channel 切换场景验证。下次在多 channel 交互时检查。
+- [x] fix: Trusted policies 在 hook 组合时不丢失 (#94545) → ✅ 回验完成 (2026-06-27)：cron isolated session 保留 `elevated` capability（session_status 确认），exec 工具在 hook composition 后仍正常可用，信任策略未丢失。
 
 ## evaluate
 - [ ] feat: Provider plugin 安装后刷新 registry (#95792) → 试验方法：安装/重装一个 provider plugin，确认 registry 立刻更新无需 restart
