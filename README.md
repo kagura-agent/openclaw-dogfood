@@ -27,10 +27,10 @@ Bugs found → issues filed upstream. Feature requests → proposals. Usage patt
 
 ## Current Status
 
-- **Running**: 2026.6.10 (aa69b12)
-- **Available**: 2026.6.10 (pending human upgrade)
-- **Upgraded**: 2026-06-20 (from 2026.6.6)
-- **Adoption**: 3/10 adopt items verified, 7 remaining
+- **Running**: 2026.6.11 (e085fa1)
+- **Available**: 2026.6.11
+- **Upgraded**: 2026-07-01 (from 2026.6.10)
+- **Adoption**: v2026.6.11 — 3/5 adopt items verified, 2 remaining + 1 待观察
 
 ## Our Usage Depth
 
