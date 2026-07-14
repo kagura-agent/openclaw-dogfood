@@ -1,44 +1,29 @@
-# Adoption Checklist — v2026.6.11 (2026-07-01)
+# Adoption Checklist — v2026.7.1 (2026-07-14)
+
+Upgraded from: 2026.6.11 (e085fa1) → 2026.7.1 (2d2ddc4)
 
 ## adopt
-- [x] feat: per-agent usage-cost reporting (#94483) → ✅ 回验完成 (2026-07-01)：`openclaw gateway usage-cost --agent kagura` 返回 token 数据，cache refreshing 中
-- [x] fix: Cron delivery validation (#95754) + pending runs preserved (#94323) → ✅ 回验完成 (2026-07-01)：12 次成功 run 全部 delivered 且 intended=resolved；网络 error 后 pending run 正确 retry
-- [~] fix: Cron thread-aware dedupe (#95794) → 待观察（无 thread-based cron 场景，观察 7 天至 2026-07-08）
-- [ ] fix: Aborted runs stop cleanly (#94412) → 回验 abort subagent 后残留执行的问题
-- [x] fix: Long-context tool-result prompts cache-stable (#95624) → ✅ 回验完成 (2026-07-01)：30k-49k token sessions 稳定 94-100% cache 率
-- [ ] fix: Plugin npm update breaks running gateway (#95589) → 回验升级时 gateway import 崩溃的问题
+- [x] feat: Session 标题自动生成 → 用在所有 channel/cron session → 20+ 活跃 session 终于可读，不再是 anonymous ID ✅ derivedTitle 已自动生效
+- [ ] feat: Cron 模型选择（UI Quick Create + 列表显示） → 用在 10+ cron jobs 管理 → 一眼看到各 job 用什么模型
+- [ ] feat: Control UI sessions-first 导航 + 搜索侧边栏 → 日常 session 管理 → 管理 20+ 活跃 session 更方便
+- [ ] fix: Cron edit delivery 修复（partial update 不覆盖隐式 mode） → 回验之前改 cron bestEffort 时 announce 被关掉的问题
+- [ ] fix: CJK Markdown emphasis 修复 → 回验中文加粗/斜体标记泄漏 → 我们大量使用中文 Markdown
+- [~] fix: Discord streamed finals（完成回复标未读） → 回验 Discord channel 漏消息问题（待观察 3 天）
+- [~] fix: Cron 正确性大修（超时时丢 provider/model、startup catch-up 丢失、blank thinking 未清理） → 回验 cron 密集场景稳定性（待观察 3 天）
+- [ ] fix: Delivery recovery pacing（重启后不 burst rate limit） → 回验 gateway 重启后 Discord 消息乱序
+- [ ] fix: Agent empty replies 可见化 → 回验之前的"静默失败"问题
 
 ## evaluate
-- [ ] feat: `openclaw agent --message-file` (#93351) → 试验方法：写一个复杂 prompt 到文件，用 `openclaw agent --message-file` 喂给 agent，确认正确执行
-- [ ] feat: per-DM model override (#95120) → 试验方法：在 Discord DM 中设置不同 model，确认生效
-- [ ] feat: RAFT CLI wake bridge (#95497) → 试验方法：从外部系统触发 agent wake-up，确认唤醒成功
-- [ ] fix: Stuck release_lane (#95299) → 试验方法：观察 channel lane blocking 是否还出现（虽然 Telegram 相关，但 lane 机制通用）
-- [ ] feat: Memory artifact sanitization (#95791) → 试验方法：跑 memory_search 检查保存质量，对比旧版是否有垃圾条目减少
+- [ ] feat: Exit-triggered schedules（session 结束后触发下一个 job） → 试验方法：给 work-loop → plan-review 链配置 exit-trigger，看能否替代固定间隔调度
+- [ ] feat: ClawRouter 内置路由 → 试验方法：看是否能做模型自动降级/预算管理；我们目前单 provider 暂不急
+- [ ] feat: Logbook work journal → 试验方法：配置 paired node 看截屏时间线效果；需要有 node 连接
+- [ ] feat: Claude Sonnet 5 / Mythos 5 新模型 → 试验方法：在低优先级 cron job 上试跑，对比质量和成本
 
 ## skip
-- feat: Slack relay mode (#94707) → 我们用 Discord，不用 Slack
-- feat: Mattermost `/oc_queue` native slash command (#95546) → 我们不用 Mattermost
-- feat: Android settings detail panels (#95148) → 我们不用移动端管理
-- feat: Codex partial deltas as partials (#95404) → 我们主要走 Claude Code，Codex harness 改进暂不相关
-- feat: Externalized official plugins + icon manifest (#95683, #95845) → 无自定义 plugin 需求，暂不采用
-
----
-
-## 上一版本遗留 (v2026.6.10 — 仍需跟进)
-- [x] feat: Fast Talks 自动模式 (#85104) → ✅ 回验完成 (2026-06-27)
-- [x] fix: Cron delivery awareness 修复 (#93580) → ✅ 回验完成 (2026-06-27)
-- [~] fix: Channel 切换时清除 stale origin (#95328) → 待观察至 2026-07-04
-- [x] fix: Trusted policies 在 hook 组合时不丢失 (#94545) → ✅ 回验完成 (2026-06-27)
-
-## 上一版本遗留 (v2026.6.9 — 仍需跟进)
-- [ ] feat: Codex 自动 plugin approvals (#92625) → 用在 ACP cron jobs
-- [x] feat: cron compact list (#93395) → ✅ 回验完成 (2026-06-25)
-- [ ] feat: Firecrawl keyless scrape (#94551) → 研究型 cron 场景
-- [ ] fix: retry thinking-only errored turns (#92191) → 空回复卡住 session
-- [ ] fix: retry empty post-tool final turns (#93073) → tool 调用后空回复被吞
-- [ ] fix: preserve fresh usage after compaction (#93084) → compaction 后 token 统计异常
-- [ ] fix: drop partialJson artifacts from history (#93469) → session history 垃圾 JSON
-- [ ] fix: preserve pending subagent announces (#94349) → subagent 完成通知丢失
-- [x] fix: cron default runMode "due" not "force" (#94453) → ✅ 回验完成 (2026-06-25)
-- [x] fix: cron isolated setup timeout retry (#94588) → ✅ 回验完成 (2026-06-25)
-- [x] fix: prevent lane timeout during long tool exec (#94082) → ✅ 回验完成 (2026-06-24)
+- feat: Conversational onboarding (Crestodian) → 我们已配好，只对新用户有用
+- feat: iOS/Android 离线 + Apple Watch 语音 → 我们主要在 server 使用
+- feat: GPT-5.6 成为默认 → 我们用 claude-opus-4-6 为主
+- feat: Telegram Codex 配对 → 我们不用 Telegram
+- fix: SQLite WAL 安全修复 → 注意 Node 版本兼容即可，无需主动操作
+- feat: Gateway crash-loop recovery → 被动受益，无需配置
+- feat: SecretRef 凭证隔离 → 被动受益，安全性自动提升
